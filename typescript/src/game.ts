@@ -1,5 +1,6 @@
-export class Game {
+import Logger from "./logger";
 
+export class Game {
     private players: Array<string> = [];
     private places: Array<number> = [];
     private purses: Array<number> = [];
@@ -11,9 +12,10 @@ export class Game {
     private scienceQuestions: Array<string> = [];
     private sportsQuestions: Array<string> = [];
     private rockQuestions: Array<string> = [];
+    private logger: Logger;
 
-    constructor() {
-
+    constructor(logger: Logger = new Logger()) {
+        this.logger = logger;
         for (let i = 0; i < 50; i++) {
             this.popQuestions.push("Pop Question " + i);
             this.scienceQuestions.push("Science Question " + i);
@@ -26,14 +28,14 @@ export class Game {
         return "Rock Question " + index;
     }
 
-    public add(name: string): boolean {
+    private add(name: string): boolean {
         this.players.push(name);
         this.places[this.howManyPlayers()] = 0;
         this.purses[this.howManyPlayers()] = 0;
         this.inPenaltyBox[this.howManyPlayers()] = false;
 
-        console.log(name + " was added");
-        console.log("They are player number " + this.players.length);
+        this.logger.log(name + " was added");
+        this.logger.log("They are player number " + this.players.length);
 
         return true;
     }
@@ -43,13 +45,13 @@ export class Game {
     }
 
     public roll(roll: number) {
-        console.log(this.players[this.currentPlayer] + " is the current player");
-        console.log("They have rolled a " + roll);
+        this.logger.log(this.players[this.currentPlayer] + " is the current player");
+        this.logger.log("They have rolled a "+roll);
     
         if (this.inPenaltyBox[this.currentPlayer]) {
           if (roll % 2 != 0) {
             this.isGettingOutOfPenaltyBox = true;
-    
+            // this.inPenaltyBox[this.currentPlayer] = false;
             console.log(this.players[this.currentPlayer] + " is getting out of the penalty box");
             this.places[this.currentPlayer] = this.places[this.currentPlayer] + roll;
             if (this.places[this.currentPlayer] > 11) {
@@ -70,7 +72,7 @@ export class Game {
             this.places[this.currentPlayer] = this.places[this.currentPlayer] - 12;
           }
     
-          console.log(this.players[this.currentPlayer] + "'s new location is " + this.places[this.currentPlayer]);
+          this.logger.log(this.players[this.currentPlayer] + "'s new location is " + this.places[this.currentPlayer]);
           console.log("The category is " + this.currentCategory());
           this.askQuestion();
         }
@@ -164,4 +166,13 @@ export class Game {
           }
     }
 
+
+    setPlayers(player1: string, player2: string, player3: string = undefined, player4: string = undefined, player5: string = undefined, player6: string = undefined) {
+        this.add(player1);
+        this.add(player2);
+        if(player3) this.add(player3);
+        if(player4) this.add(player4);
+        if(player5) this.add(player5);
+        if(player6) this.add(player6);
+    }
 }
