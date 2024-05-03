@@ -9,4 +9,8 @@ export default class Logger {
     public getLogs() {
         return this.logs;
     }
+
+    public clear() {
+        this.logs = []
+    }
 }
